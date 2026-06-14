@@ -1,0 +1,55 @@
+const mockMachines = [
+  {
+    id: "M-101",
+    type: "M",
+    rpm: 1500,
+    torque: 40,
+    toolWear: 50,
+    healthScore: 92,
+    faliureProablity: 8,
+    status: "Healthy",
+  },
+  {
+    id: "M-102",
+    type: "H",
+    rpm: 1420,
+    torque: 55,
+    toolWear: 120,
+    healthScore: 68,
+    faliureProablity: 32,
+    status: "Warning",
+  },
+  {
+    id: "M-103",
+    type: "L",
+    rpm: 1380,
+    torque: 62,
+    toolWear: 180,
+    healthScore: 34,
+    faliureProablity: 66,
+    status: "Critical",
+  },
+  {
+    id: "M-104",
+    type: "M",
+    rpm: 1560,
+    torque: 38,
+    toolWear: 45,
+    healthScore: 95,
+    faliureProablity: 5,
+    status: "Healthy",
+  },
+  {
+    id: "M-105",
+    type: "H",
+    rpm: 1475,
+    torque: 50,
+    toolWear: 95,
+    healthScore: 76,
+    faliureProablity: 24,
+    status: "Warning",
+  },
+];
+
+
+export default mockMachines;
