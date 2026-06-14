@@ -4,7 +4,7 @@ import xgboost as xgb
 from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
-file_path = '../Processed_data/model_ready_data.csv'
+file_path = "IOCL/Data/Processed_data/model_ready_data.csv"
 df = pd.read_csv(file_path)
 
 df.columns = df.columns.str.replace('[', '', regex=False)
