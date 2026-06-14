@@ -1,3 +1,5 @@
+import NotificationBell from "./NotificationBell";
+
 function Header() {
   return (
     <header className="bg-slate-800 border-b border-slate-700 px-6 py-4">
@@ -18,9 +20,7 @@ function Header() {
             </span>
         </div>
 
-          <span className="text-slate-300 text-xl">
-            🔔
-          </span>
+          <NotificationBell />
 
           <div className="text-slate-300">
             👤 Admin
