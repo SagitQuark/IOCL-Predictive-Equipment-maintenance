@@ -1,0 +1,11 @@
+from pydantic import BaseModel
+
+class PredictionInput(BaseModel):
+    machine_type: str
+
+    air_temperature: float
+    process_temperature: float
+
+    rotational_speed: int
+    torque: float
+    tool_wear: int
