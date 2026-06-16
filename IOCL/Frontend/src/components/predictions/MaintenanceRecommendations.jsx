@@ -1,18 +1,17 @@
-import mockPredictions from "../../data/mockPredictions";
 
-function MaintenanceRecommendations() {
-  const nonHealthy = mockPredictions
+function MaintenanceRecommendations( {predictions}) {
+  const nonHealthy = predictions
     .filter((p) => p.status !== "Healthy")
-    .sort((a, b) => b.failureProbability - a.failureProbability)
-    .slice(0, 5);
+    .sort((a, b) => b.failure_probability - a.failure_probability)
+    .slice(0, 10);
 
   return (
     <section className="bg-slate-800 border border-slate-700 rounded-xl p-6">
-      <h2 className="text-xl font-semibold text-white mb-4">
+      <h2 className="text-xl font-semibold text-yellow-500 mb-4">
         Maintenance Recommendations
       </h2>
 
-      <div className="space-y-3 max-h-96 overflow-y-auto">
+      <div className="space-y-3 max-h-127 overflow-y-auto">
         {nonHealthy.length === 0 ? (
           <p className="text-gray-400 text-center py-6">
             No maintenance required
@@ -20,14 +19,16 @@ function MaintenanceRecommendations() {
         ) : (
           nonHealthy.map((recommendation) => (
             <div
-              key={recommendation.id}
-              className="bg-slate-700/50 border border-slate-600 rounded-lg p-4 hover:bg-slate-700/70 transition-colors"
+              key={recommendation.machine_id}
+              className="bg-slate-700/50 border border-slate-600 rounded-lg p-3 hover:bg-slate-700/80 transition-colors mr-4"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
-                  <p className="text-white font-semibold">{recommendation.id}</p>
+                  <p className="text-white font-semibold">{recommendation.machine_id}</p>
                   <p className="text-slate-400 text-sm mt-1">
-                    {recommendation.recommendedAction}
+                     {recommendation.status === "Critical"
+                      ? "Immediate Inspection"
+                      : "Schedule Inspection"}
                   </p>
                 </div>
 
@@ -46,7 +47,7 @@ function MaintenanceRecommendations() {
                 <p className="text-slate-400 text-xs">
                   Failure Probability:{" "}
                   <span className="text-white font-semibold">
-                    {recommendation.failureProbability}%
+                    {recommendation.failure_probability}%
                   </span>
                 </p>
               </div>

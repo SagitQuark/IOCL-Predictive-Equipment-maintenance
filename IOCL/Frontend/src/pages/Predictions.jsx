@@ -1,9 +1,34 @@
 import PredictionSummaryCards from "../components/predictions/PredictionSummaryCards";
 import FailureRiskTable from "../components/predictions/FailureRiskTable";
 import MaintenanceRecommendations from "../components/predictions/MaintenanceRecommendations";
-import mockPredictions from "../data/mockPredictions";
+// import mockPredictions from "../data/mockPredictions";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function Predictions() {
+
+  const [predictions, setPredictions] = useState([]);
+  const [loading, setLoading] = useState(true);
+    useEffect(() => {
+  const fetchPredictions = async () => {
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:8000/predictions"
+      );
+
+      console.log(response.data);
+
+      setPredictions(response.data);
+    } catch (error) {
+      console.error("Error fetching predictions:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchPredictions();
+}, []);
+
   return (
     <div className="p-6">
       {/* Page Title */}
@@ -17,15 +42,15 @@ function Predictions() {
       </div>
 
       {/* Summary Cards */}
-      <PredictionSummaryCards predictions={mockPredictions} />
+      <PredictionSummaryCards predictions={predictions} />
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 mb-6">
         {/* Failure Risk Table */}
-        <FailureRiskTable />
+        <FailureRiskTable predictions={predictions} />
 
         {/* Maintenance Recommendations */}
-        <MaintenanceRecommendations />
+        <MaintenanceRecommendations predictions={predictions} />
       </div>
 
       {/* Future Enhancements */}

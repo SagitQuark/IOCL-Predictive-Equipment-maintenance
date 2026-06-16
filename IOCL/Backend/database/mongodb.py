@@ -6,6 +6,10 @@ load_dotenv()
 
 client = MongoClient(os.getenv("MONGO_URI"))
 
+db = client[os.getenv("DB_NAME")]
+
+predictions_collection = db["predictions"]
+
 try:
     client.admin.command("ping")
     print("MongoDB Connected Successfully!")

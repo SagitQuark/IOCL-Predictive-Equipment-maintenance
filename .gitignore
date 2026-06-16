@@ -9,6 +9,7 @@ venv/
 
 # Models
 *.pkl
+!Backend/ML/models/best_model.pkl
 *.joblib
 
 # OS
@@ -20,3 +21,5 @@ Thumbs.db
 
 # Streamlit
 .streamlit/secrets.toml
+
+.env

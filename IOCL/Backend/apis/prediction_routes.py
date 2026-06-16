@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 from schemas.prediction_schema import PredictionInput
+from database.mongodb import predictions_collection
+from datetime import datetime, UTC
 
 from ML.model_loader import model
 
@@ -81,9 +83,38 @@ def predict_failure(data: PredictionInput):
     else:
         status = "Healthy"
 
+    #Inserting Data
+    predictions_collection.insert_one({
+    "machine_id": data.machine_id,
+    "machine_type": data.machine_type,
+    "air_temperature": data.air_temperature,
+    "process_temperature": data.process_temperature,
+    "rotational_speed": data.rotational_speed,
+    "torque": data.torque,
+    "tool_wear": data.tool_wear,
+
+    "prediction": int(prediction),
+    "failure_probability": round(probability * 100, 2),
+    "health_score": health_score,
+    "status": status,
+    
+    "timestamp": datetime.now(UTC)
+})
     return {
         "prediction": int(prediction),
         "failure_probability": round(probability * 100, 2),
         "health_score": health_score,
         "status": status
     }
+    
+@router.get("/predictions")
+def get_predictions():
+
+    predictions = list(
+        predictions_collection.find(
+            {},
+            {"_id": 0}
+        )
+    )
+
+    return predictions

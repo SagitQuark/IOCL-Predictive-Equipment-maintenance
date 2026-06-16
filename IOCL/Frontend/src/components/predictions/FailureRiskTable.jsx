@@ -1,6 +1,6 @@
-import mockPredictions from "../../data/mockPredictions";
 
-function FailureRiskTable() {
+
+function FailureRiskTable( {predictions} ) {
   return (
     <section className="bg-slate-800 border border-slate-700 rounded-xl p-6">
       <h2 className="text-xl font-semibold text-white mb-4">
@@ -34,30 +34,30 @@ function FailureRiskTable() {
           </thead>
 
           <tbody>
-            {mockPredictions.map((prediction) => (
+            {predictions.map((prediction) => (
               <tr
-                key={prediction.id}
+                key={prediction.machine_id}
                 className="border-b border-slate-700 hover:bg-slate-700/30 transition-colors"
               >
                 <td className="px-4 py-3 text-white text-center">
-                  {prediction.id}
+                  {prediction.machine_id}
                 </td>
 
                 <td className="px-4 py-3 text-white text-center">
-                  {prediction.failureProbability}%
+                  {prediction.failure_probability}%
                 </td>
 
                 <td className="px-4 py-3 text-white text-center">
                   <span
                     className={`font-semibold ${
-                      prediction.healthScore >= 80
+                      prediction.health_score >= 80
                         ? "text-green-400"
-                        : prediction.healthScore >= 50
+                        : prediction.health_score >= 50
                         ? "text-orange-400"
                         : "text-red-400"
                     }`}
                   >
-                    {prediction.healthScore}
+                    {prediction.health_score}
                   </span>
                 </td>
 
@@ -75,8 +75,22 @@ function FailureRiskTable() {
                   </span>
                 </td>
 
-                <td className="px-4 py-3 text-white text-center">
-                  {prediction.recommendedAction}
+                <td className="px-4 py-3 text-center">
+                  <span
+                    className={`px-2 py-1 text-sm rounded font-medium ${
+                      prediction.status === "Critical"
+                        ? "bg-red-500/10 text-red-400"
+                        : prediction.status === "Warning"
+                        ? "bg-orange-500/10 text-orange-400"
+                        : "bg-orange-500/10 text-green-400"
+                    }`}
+                  >
+                    {prediction.status === "Critical"
+                      ? "Immediate Inspection"
+                      : prediction.status === "Warning"
+                      ? "Schedule Inspection"
+                      : "Routine Maintenance"}
+                  </span>
                 </td>
               </tr>
             ))}

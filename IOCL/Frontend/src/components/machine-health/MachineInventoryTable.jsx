@@ -1,8 +1,33 @@
-import mockMachines from "../../data/mockMachines";
+import { useState, useEffect} from "react";
+import axios from "axios";
 
 function MachineInventoryTable({ searchQuery, statusFilter, typeFilter }) {
+
+    const [machines, setMachines] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+    const fetchMachines = async () => {
+        try {
+            const response = await axios.get(
+                "http://127.0.0.1:8000/machines"
+            );
+
+            console.log(response.data);
+
+            setMachines(response.data);
+        } catch (error) {
+            console.error("Error fetching machines:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchMachines();
+}, []);
+
     // Filter machines based on the search query
-    const filteredMachines = mockMachines.filter((machine) => {
+    const filteredMachines = machines.filter((machine) => {
         const matchesSearch = !searchQuery || machine.id
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
@@ -104,7 +129,7 @@ function MachineInventoryTable({ searchQuery, statusFilter, typeFilter }) {
                                 </td>
 
                                 <td className="px-4 py-3 text-white text-center">
-                                    {machine.faliureProablity}%
+                                    {machine.failureProbability}%
                                 </td>
 
                                 <td className="px-4 py-3 text-white text-center">
