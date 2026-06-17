@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from apis.machine_routes import router as machine_router
 from apis.prediction_routes import router as prediction_router
+from apis.analytics_routes import router as analytics_router
+from apis.dashboard_routes import router as dashboard_router
+
 
 app = FastAPI(
     title="IOCL Predictive Maintenance API"
@@ -24,4 +27,12 @@ app.include_router(
 app.include_router(
     machine_router,
     tags=["Machines"]
+)
+
+app.include_router(
+    analytics_router
+)
+
+app.include_router(
+    dashboard_router
 )

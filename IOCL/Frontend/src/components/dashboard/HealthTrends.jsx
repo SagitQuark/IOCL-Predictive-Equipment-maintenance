@@ -7,16 +7,27 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useEffect, useState } from "react";
+import api from "../../services/api";
+
 
 function HealthTrends() {
-  const healthTrendData = [
-    { month: "Jan", score: 85 },
-    { month: "Feb", score: 88 },
-    { month: "Mar", score: 87 },
-    { month: "Apr", score: 90 },
-    { month: "May", score: 92 },
-    { month: "Jun", score: 94 },
-  ];
+
+  const [healthTrendData, setHealthTrendData] = useState([]);
+
+  useEffect(() => {
+  const fetchHealthTrends = async () => {
+    try {
+      const response = await api.get("/dashboard/health-trends");
+      setHealthTrendData(response.data);
+    } catch (error) {
+      console.error("Failed to fetch health trends:", error);
+    }
+  };
+
+  fetchHealthTrends();
+}, []);
+
 
   return (
     <section className="bg-slate-800 border border-slate-700 rounded-xl p-6 pr-10">
@@ -27,7 +38,7 @@ function HealthTrends() {
         <LineChart data={healthTrendData}>
           <CartesianGrid strokeDasharray="3 3" stroke="#475569" />
           <XAxis
-            dataKey="month"
+            dataKey="date"
             stroke="#94a3b8"
             style={{ fontSize: "12px" }}
           />

@@ -1,21 +1,25 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import mockPredictions from "../../data/mockPredictions";
+// import mockPredictions from "../../data/mockPredictions";
+import { useEffect, useState } from "react";
+import api from "../../services/api";
 
 function MachineTypeDistributionChart() {
-  const typeData = [
-    {
-      name: "L",
-      count: mockPredictions.filter((p) => p.type === "L").length,
-    },
-    {
-      name: "M",
-      count: mockPredictions.filter((p) => p.type === "M").length,
-    },
-    {
-      name: "H",
-      count: mockPredictions.filter((p) => p.type === "H").length,
-    },
-  ];
+
+  const [typeData, setTypeData] = useState([]);
+
+  useEffect(() => {
+  const fetchMachineTypes = async () => {
+    try {
+      const response = await api.get("/analytics/machine-types");
+      setTypeData(response.data);
+    } catch (error) {
+      console.error("Failed to fetch machine types:", error);
+    }
+  };
+
+  fetchMachineTypes();
+}, []);
+
 
   return (
     <section className="bg-slate-800 border border-slate-700 rounded-xl p-6">

@@ -1,20 +1,24 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import mockPredictions from "../../data/mockPredictions";
+// import mockPredictions from "../../data/mockPredictions";
+import { useEffect, useState } from "react";
+import api from "../../services/api";
 
 function HealthScoreDistributionChart() {
-  const healthDistribution = {
-    "80-100": mockPredictions.filter((p) => p.healthScore >= 80).length,
-    "50-79": mockPredictions.filter(
-      (p) => p.healthScore >= 50 && p.healthScore < 80
-    ).length,
-    "0-49": mockPredictions.filter((p) => p.healthScore < 50).length,
+
+  const [distributionData, setDistributionData] = useState([]);
+
+  useEffect(() => {
+  const fetchHealthDistribution = async () => {
+    try {
+      const response = await api.get("/analytics/health-distribution");
+      setDistributionData(response.data);
+    } catch (error) {
+      console.error("Failed to fetch health distribution:", error);
+    }
   };
 
-  const distributionData = [
-    { range: "80-100", count: healthDistribution["80-100"] },
-    { range: "50-79", count: healthDistribution["50-79"] },
-    { range: "0-49", count: healthDistribution["0-49"] },
-  ];
+  fetchHealthDistribution();
+}, []);
 
   return (
     <section className="bg-slate-800 border border-slate-700 rounded-xl p-6">

@@ -1,31 +1,37 @@
 import KPICard from "../components/dashboard/KPICard";
 import HighRiskMachines from "../components/dashboard/HighRiskMachines";
 import HealthTrends from "../components/dashboard/HealthTrends";
+import { useEffect, useState } from "react";
+import api from "../services/api";
 
 function Dashboard() {
   // Sample data for high-risk machines
-  const highRiskMachines = [
-    {
-      id: "M-102",
-      risk: 92,
-      status: "Critical",
-    },
-    {
-      id: "M-245",
-      risk: 88,
-      status: "High Risk",
-    },
-    {
-      id: "M-178",
-      risk: 81,
-      status: "High Risk",
-    },
-    {
-      id: "M-331",
-      risk: 76,
-      status: "Warning",
-    },
-  ];
+  const [summary, setSummary] = useState({
+  totalMachines: 0,
+  healthyMachines: 0,
+  criticalMachines: 0,
+  avgHealthScore: 0,
+});
+
+const [highRiskMachines, setHighRiskMachines] = useState([]);
+
+  useEffect(() => {
+  const fetchDashboardData = async () => {
+    try {
+      const [summaryResponse, riskResponse] = await Promise.all([
+        api.get("/analytics/summary"),
+        api.get("/dashboard/high-risk-machines"),
+      ]);
+
+      setSummary(summaryResponse.data);
+      setHighRiskMachines(riskResponse.data);
+    } catch (error) {
+      console.error("Failed to fetch dashboard data:", error);
+    }
+  };
+
+  fetchDashboardData();
+}, []);
 
   return (
     <div className="p-6">
@@ -47,10 +53,11 @@ function Dashboard() {
             KPI Overview
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <KPICard title="Total Machines" value="10,000" />
-            <KPICard title="Healthy Machines" value="9,661" />
-            <KPICard title="At Risk Machines" value="339" />
-            <KPICard title="Health Score" value="94%" />
+            <KPICard
+              title="Total Machines" value={summary.totalMachines} />
+            <KPICard title="Healthy Machines" value={summary.healthyMachines} />
+            <KPICard title="At Risk Machines" value={summary.criticalMachines} />
+            <KPICard title="Health Score" value={`${summary.avgHealthScore}%`} />
           </div>
         </section>
 

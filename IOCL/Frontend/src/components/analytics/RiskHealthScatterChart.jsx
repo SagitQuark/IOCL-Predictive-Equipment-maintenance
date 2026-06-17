@@ -1,12 +1,25 @@
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import mockPredictions from "../../data/mockPredictions";
+// import mockPredictions from "../../data/mockPredictions";
+import { useEffect, useState } from "react";
+import api from "../../services/api";
 
 function RiskHealthScatterChart() {
-  const scatterData = mockPredictions.map((p) => ({
-    healthScore: p.healthScore,
-    failureProbability: p.failureProbability,
-    id: p.id,
-  }));
+
+  const [scatterData, setScatterData] = useState([]);
+
+  useEffect(() => {
+  const fetchScatterData = async () => {
+    try {
+      const response = await api.get("/analytics/risk-health-scatter");
+      setScatterData(response.data);
+    } catch (error) {
+      console.error("Failed to fetch scatter data:", error);
+    }
+  };
+
+  fetchScatterData();
+}, []);
+
 
   return (
     <section className="bg-slate-800 border border-slate-700 rounded-xl p-6">

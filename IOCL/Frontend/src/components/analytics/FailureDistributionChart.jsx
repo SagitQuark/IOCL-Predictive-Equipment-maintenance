@@ -1,21 +1,43 @@
 import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from "recharts";
-import mockPredictions from "../../data/mockPredictions";
+// import mockPredictions from "../../data/mockPredictions";
+import { useEffect, useState } from "react";
+import api from "../../services/api";
 
 function FailureDistributionChart() {
+
+  const [summary, setSummary] = useState({
+  healthyMachines: 0,
+  warningMachines: 0,
+  criticalMachines: 0,
+});
+
+useEffect(() => {
+  const fetchSummary = async () => {
+    try {
+      const response = await api.get("/analytics/summary");
+      setSummary(response.data);
+    } catch (error) {
+      console.error("Failed to fetch analytics summary:", error);
+    }
+  };
+
+  fetchSummary();
+}, []);
+
   const failureData = [
-    {
-      name: "Healthy",
-      value: mockPredictions.filter((p) => p.status === "Healthy").length,
-    },
-    {
-      name: "Warning",
-      value: mockPredictions.filter((p) => p.status === "Warning").length,
-    },
-    {
-      name: "Critical",
-      value: mockPredictions.filter((p) => p.status === "Critical").length,
-    },
-  ];
+  {
+    name: "Healthy",
+    value: summary.healthyMachines,
+  },
+  {
+    name: "Warning",
+    value: summary.warningMachines,
+  },
+  {
+    name: "Critical",
+    value: summary.criticalMachines,
+  },
+];
 
   const COLORS = ["#10b981", "#f59e0b", "#ef4444"];
 
