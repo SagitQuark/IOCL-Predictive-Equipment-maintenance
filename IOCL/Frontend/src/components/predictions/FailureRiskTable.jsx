@@ -1,8 +1,23 @@
 
-
+import { useState } from "react";
 function FailureRiskTable( {predictions} ) {
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
+  const totalPages = Math.ceil(
+  predictions.length / rowsPerPage
+);
+
+const startIndex =
+  (currentPage - 1) * rowsPerPage;
+
+const paginatedPredictions =
+  predictions.slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
   return (
-    <section className="bg-slate-800 border border-slate-700 rounded-xl p-6">
+    <section className="bg-slate-800 border border-slate-700 rounded-xl p-4">
       <h2 className="text-xl font-semibold text-white mb-4">
         Failure Risk Analysis
       </h2>
@@ -34,7 +49,7 @@ function FailureRiskTable( {predictions} ) {
           </thead>
 
           <tbody>
-            {predictions.map((prediction) => (
+            {paginatedPredictions.map((prediction) => (
               <tr
                 key={prediction.machine_id}
                 className="border-b border-slate-700 hover:bg-slate-700/30 transition-colors"
@@ -61,7 +76,7 @@ function FailureRiskTable( {predictions} ) {
                   </span>
                 </td>
 
-                <td className="px-4 py-3 text-white text-center">
+                <td className="px-3 py-4 text-white text-center">
                   <span
                     className={`px-2 py-1 text-sm font-medium rounded ${
                       prediction.status === "Critical"
@@ -96,6 +111,37 @@ function FailureRiskTable( {predictions} ) {
             ))}
           </tbody>
         </table>
+        <div className="flex items-center justify-between mt-6">
+
+          <button
+            onClick={() =>
+              setCurrentPage((prev) =>
+                Math.max(prev - 1, 1)
+              )
+            }
+            disabled={currentPage === 1}
+            className="px-4 py-2 rounded bg-slate-700 text-white disabled:opacity-50"
+          >
+            Previous
+          </button>
+
+          <p className="text-slate-300">
+            Page {currentPage} of {totalPages}
+          </p>
+
+          <button
+            onClick={() =>
+              setCurrentPage((prev) =>
+                Math.min(prev + 1, totalPages)
+              )
+            }
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 rounded bg-slate-700 text-white disabled:opacity-50"
+          >
+            Next
+          </button>
+
+        </div>
       </div>
     </section>
   );

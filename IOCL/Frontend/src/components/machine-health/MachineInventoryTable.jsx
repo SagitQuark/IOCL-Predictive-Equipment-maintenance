@@ -5,6 +5,9 @@ function MachineInventoryTable({ searchQuery, statusFilter, typeFilter }) {
 
     const [machines, setMachines] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const rowsPerPage = 10;
 
     useEffect(() => {
     const fetchMachines = async () => {
@@ -28,23 +31,37 @@ function MachineInventoryTable({ searchQuery, statusFilter, typeFilter }) {
 
     // Filter machines based on the search query
     const filteredMachines = machines.filter((machine) => {
-        const matchesSearch = !searchQuery || machine.id
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
+    const matchesSearch =
+        !searchQuery ||
+        machine.id
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase());
 
-    // Filter machines based on the status filter
-    const matchesStatus = 
+    const matchesStatus =
         statusFilter === "All" ||
         machine.status === statusFilter;
 
-    const matchesType = 
+    const matchesType =
         typeFilter === "All" ||
         machine.type === typeFilter;
 
-    // Apply both filters   
-
-        return matchesSearch && matchesStatus && matchesType;
+    return (
+        matchesSearch && matchesStatus && matchesType
+    );
 });
+
+    const totalPages = Math.ceil(
+        filteredMachines.length / rowsPerPage
+    );
+
+    const startIndex =
+        (currentPage - 1) * rowsPerPage;
+
+    const paginatedMachines =
+        filteredMachines.slice(
+            startIndex,
+            startIndex + rowsPerPage
+        );
 
     return (
         
@@ -103,7 +120,7 @@ function MachineInventoryTable({ searchQuery, statusFilter, typeFilter }) {
                             </tr>
                         ) : (
 
-                        filteredMachines.map((machine) => (
+                        paginatedMachines.map((machine) => (
                             <tr
                                 key={machine.id}
                                 className="border-b border-slate-700 hover:bg-slate-700/30 transition-colors"
@@ -159,6 +176,37 @@ function MachineInventoryTable({ searchQuery, statusFilter, typeFilter }) {
                         )))}
                     </tbody>
                 </table>
+                <div className="flex items-center justify-between mt-6">
+                    
+                    <button
+                        onClick={() =>
+                            setCurrentPage((prev) =>
+                                Math.max(prev - 1, 1)
+                            )
+                        }
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 rounded bg-slate-700 text-white disabled:opacity-50"
+                    >
+                        Previous
+                    </button>
+
+                    <p className="text-slate-300">
+                        Page {currentPage} of {totalPages}
+                    </p>
+
+                    <button
+                        onClick={() =>
+                            setCurrentPage((prev) =>
+                                Math.min(prev + 1, totalPages)
+                            )
+                        }
+                        disabled={currentPage === totalPages}
+                        className="px-4 py-2 rounded bg-slate-700 text-white disabled:opacity-50"
+                    >
+                        Next
+                    </button>
+
+                </div>
             </div>
         </section>
 
